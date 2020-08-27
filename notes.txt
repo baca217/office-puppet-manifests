@@ -1,0 +1,16 @@
+Notes for lab 4, Linux Admin
+
+-added line to /etc/pam.d/system-auth to ensure password with 10 length, 2 digits, 2 capital letters, and 1 non-alphanumeric symbol
+	- password    requisite     pam_pwquality.so try_first_pass local_users_only retry=3 authtok_type= minlen=11 ucredit=-2 dcredit=-2 ocredit=-1 lcredit=1
+
+- umask can be set in /etc/profile.d/sh.local for some reason pam_umask isn't working
+	- need to comment out how the umask is set in /etc/profile and /etc/bashrc
+		- once this is done, add pam module in /etc/pam.d/sshd to set umask.
+		- also add pam_module in /etc/pam.d/login
+		- covers console and sshd logins
+
+- added line to /etc/pam.d/sshd to ensure only root and users in the group could login from ssh
+	- line is 'auth        required      pam_listfile.so onerr=fail item=group sense=allow file=/etc/login.group.allowed'
+	-adding the line to /etc/pam/sysem-auth prevents users from logging in at console
+- not 100% sure if this protects us completely or not
+	- auth	    required 	  pam_listfile.so onerr=fail item=group sense=allow file=/etc/login.group.allowed
